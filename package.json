@@ -1,0 +1,39 @@
+{
+  "name": "jogging-course-planner-web",
+  "version": "1.0.0",
+  "description": "Google Mapsを使ったジョギングコース自動生成Webアプリ",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve .",
+    "build": "echo 'No build step required for vanilla HTML/CSS/JS'",
+    "deploy:netlify": "netlify deploy --prod --dir .",
+    "deploy:vercel": "vercel --prod .",
+    "validate": "html-validate index.html",
+    "lighthouse": "lighthouse http://localhost:8000 --output=html --output-path=./lighthouse-report.html"
+  },
+  "keywords": [
+    "jogging",
+    "running",
+    "maps",
+    "pwa",
+    "fitness",
+    "health",
+    "google-maps"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "html-validate": "^8.0.0",
+    "lighthouse": "^11.0.0",
+    "serve": "^14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/jogging-planner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/jogging-planner/issues"
+  },
+  "homepage": "https://yourusername.github.io/jogging-planner"
+}

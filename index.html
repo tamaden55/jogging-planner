@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ジョギングコースプランナー</title>
+    
+    <!-- PWA対応メタタグ -->
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="background-color" content="#f5f5f5">
+    <meta name="description" content="Google Mapsを使ったジョギングコース自動生成Webアプリ">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ジョギングプランナー">
+    
+    <!-- マニフェストとアイコン -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="number"], select {
+            width: 200px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #map {
+            height: 600px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .route-info {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        /* PWAインストールバナー */
+        .install-banner {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .install-banner button {
+            background: white;
+            color: #4CAF50;
+            margin-left: 10px;
+        }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .controls {
+                padding: 15px;
+            }
+
+            button {
+                padding: 12px 20px;
+                font-size: 16px;
+                margin: 5px 0;
+                width: 100%;
+                max-width: 200px;
+            }
+
+            input[type="number"], select {
+                width: 100%;
+                max-width: 200px;
+                padding: 12px;
+                font-size: 16px;
+                -webkit-appearance: none;
+                border-radius: 8px;
+            }
+
+            #map {
+                height: 400px;
+                margin-bottom: 20px;
+            }
+
+            .control-group {
+                text-align: center;
+            }
+
+            label {
+                font-size: 16px;
+            }
+        }
+
+        /* iPhone X以降の対応 */
+        @supports (padding: env(safe-area-inset-top)) {
+            .container {
+                padding-top: calc(20px + env(safe-area-inset-top));
+                padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* APIキー設定画面 */
+        .api-setup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .setup-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .setup-container h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .setup-steps {
+            text-align: left;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .setup-steps ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .setup-steps a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .api-input {
+            margin: 20px 0;
+        }
+
+        .api-input input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        .api-input button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .api-input button:hover {
+            background: #45a049;
+        }
+
+        .setup-note {
+            color: #666;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- PWAインストールバナー -->
+    <div id="installBanner" class="install-banner">
+        📱 このアプリをホーム画面に追加できます！
+        <button onclick="installPWA()">インストール</button>
+        <button onclick="dismissInstallBanner()" style="background: transparent; color: white;">×</button>
+    </div>
+
+    <!-- APIキー設定画面 -->
+    <div id="apiKeySetup" class="api-setup" style="display: none;">
+        <div class="setup-container">
+            <h2>🔑 Google Maps API設定</h2>
+            <p>アプリを使用するにはGoogle Maps APIキーが必要です。</p>
+            
+            <div class="setup-steps">
+                <h3>APIキー取得手順:</h3>
+                <ol>
+                    <li><a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a>を開く</li>
+                    <li>プロジェクトを作成または選択</li>
+                    <li>「Maps JavaScript API」を有効化</li>
+                    <li>認証情報でAPIキーを作成</li>
+                    <li>HTTPリファラー制限を設定（推奨）</li>
+                </ol>
+            </div>
+            
+            <div class="api-input">
+                <label for="apiKeyInput">APIキーを入力:</label>
+                <input type="password" id="apiKeyInput" placeholder="AIzaSy...">
+                <button onclick="saveApiKey()">保存して開始</button>
+            </div>
+            
+            <div class="setup-note">
+                <small>※ APIキーはブラウザのローカルストレージに安全に保存されます</small>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainContent" class="container">
+        <h1>🏃‍♂️ ジョギングコースプランナー</h1>
+        
+        <div class="instructions">
+            <strong>使い方:</strong> 地図上をクリックしてスタート地点を選択し、希望する距離を入力してください。最適なジョギングコースを提案します。
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="routeType">コースタイプ:</label>
+                <select id="routeType" onchange="handleRouteTypeChange()">
+                    <option value="loop">🔄 周回コース（一筆書きでループ）</option>
+                    <option value="outAndBack">↩️ 往復コース（同じ道を戻る）</option>
+                    <option value="pointToPoint">➡️ 片道コース（違う場所で終了）</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="distance">希望距離 (km):</label>
+                <input type="number" id="distance" min="0.5" max="50" step="0.1" value="5.0">
+            </div>
+            
+            <div class="control-group">
+                <button id="generateRoute" disabled>コース生成</button>
+                <button id="clearRoute">クリア</button>
+                <button onclick="clearApiKey()" style="background: #ff6b6b;">API設定</button>
+            </div>
+            
+            <div id="selectedPoint" style="color: #666; font-size: 14px;">
+                地図上をクリックしてスタート地点を選択してください
+            </div>
+            
+            <div id="endPointInfo" style="color: #666; font-size: 14px; display: none; margin-top: 10px;">
+                地図上をもう一度クリックして終点を選択してください
+            </div>
+        </div>
+
+        <div id="map"></div>
+
+        <div id="routeInfo" class="route-info">
+            <h3>生成されたコース情報</h3>
+            <div id="routeDetails"></div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="demo-map.js"></script>
+    <script src="app.js"></script>
+    
+    <script>
+        // Google Maps API動的読み込み
+        function loadGoogleMapsAPI() {
+            const apiKey = CONFIG.getApiKey();
+            if (!apiKey) {
+                alert('Google Maps APIキーが設定されていません。設定画面から入力してください。');
+                showApiKeySetup();
+                return;
+            }
+            
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry`;
+            script.async = true;
+            script.defer = true;
+            script.onerror = () => {
+                alert('Google Maps APIの読み込みに失敗しました。APIキーを確認してください。');
+                showApiKeySetup();
+            };
+            document.head.appendChild(script);
+        }
+        
+        // APIキー設定画面を表示
+        function showApiKeySetup() {
+            document.getElementById('apiKeySetup').style.display = 'block';
+            document.getElementById('mainContent').style.display = 'none';
+        }
+        
+        // APIキーを保存
+        function saveApiKey() {
+            const apiKey = document.getElementById('apiKeyInput').value;
+            if (CONFIG.setApiKey(apiKey)) {
+                document.getElementById('apiKeySetup').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                loadGoogleMapsAPI();
+            } else {
+                alert('有効なAPIキーを入力してください。');
+            }
+        }
+        
+        // APIキーをクリア
+        function clearApiKey() {
+            CONFIG.clearApiKey();
+            showApiKeySetup();
+        }
+        
+        // PWA関連
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').style.display = 'block';
+        });
+        
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('PWAインストールが受諾されました');
+                    }
+                    deferredPrompt = null;
+                    dismissInstallBanner();
+                });
+            }
+        }
+        
+        function dismissInstallBanner() {
+            document.getElementById('installBanner').style.display = 'none';
+        }
+        
+        // ページ読み込み時にAPIキーをチェック
+        window.addEventListener('load', () => {
+            // Service Worker登録
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            }
+            
+            // APIキーチェック
+            const storedKey = localStorage.getItem('google_maps_api_key');
+            if (storedKey) {
+                loadGoogleMapsAPI();
+            } else {
+                showApiKeySetup();
+            }
+        });
+    </script>
+</body>
+</html>
