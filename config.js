@@ -2,13 +2,13 @@
 const CONFIG = {
     // デモモード判定
     isDemoMode: function() {
-        // GitHub Pages、Netlify、Vercelなどのドメインを検出
+        // GitHub Pagesのみデモモード（他は本番モード）
         const demoHosts = [
-            'github.io',
-            'netlify.app', 
-            'vercel.app',
-            'surge.sh',
-            'pages.dev'
+            'github.io'
+            // 'netlify.app',  // コメントアウト = 本番モード
+            // 'vercel.app',   // コメントアウト = 本番モード
+            // 'surge.sh',
+            // 'pages.dev'
         ];
         
         const hostname = window.location.hostname;

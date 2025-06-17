@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ジョギングプランナー - 機能紹介</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .showcase {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .hero {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3em;
+            margin: 0 0 20px 0;
+        }
+        .hero p {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+        .features {
+            padding: 50px 40px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin: 40px 0;
+        }
+        .feature {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            background: #f8f9fa;
+        }
+        .feature h3 {
+            color: #4CAF50;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        .demo-section {
+            background: #e8f5e8;
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 15px;
+        }
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .tech-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .action-buttons {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        .btn.secondary {
+            background: #2196F3;
+        }
+        .workflow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        .workflow-step {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            margin: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .workflow-step .number {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: bold;
+        }
+        .arrow {
+            font-size: 2em;
+            color: #4CAF50;
+            margin: 0 10px;
+        }
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 20px;
+            }
+            .hero h1 {
+                font-size: 2em;
+            }
+            .features {
+                padding: 30px 20px;
+            }
+            .workflow {
+                flex-direction: column;
+            }
+            .arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="showcase">
+        <div class="hero">
+            <h1>🏃‍♂️ ジョギングコースプランナー</h1>
+            <p>Google Maps APIを活用したインテリジェントなルート自動生成</p>
+        </div>
+        
+        <div class="features">
+            <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 40px;">✨ 主要機能</h2>
+            
+            <div class="feature-grid">
+                <div class="feature">
+                    <h3>🔄 3つのコースタイプ</h3>
+                    <p><strong>周回コース:</strong> スタート地点に戻る一筆書きルート<br>
+                    <strong>往復コース:</strong> 同じ道を戻るシンプルルート<br>
+                    <strong>片道コース:</strong> 異なる終点で終了するルート</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>🎯 精密な距離制御</h3>
+                    <p>0.5km〜50kmまで対応<br>
+                    目標距離の±15%以内の高精度<br>
+                    複数アルゴリズムによる最適化</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>📊 詳細な分析</h3>
+                    <p>リアルタイム距離計算<br>
+                    予想所要時間・平均ペース<br>
+                    ルート精度評価</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>📱 モダンなUX</h3>
+                    <p>PWA対応（オフライン動作）<br>
+                    レスポンシブデザイン<br>
+                    ホーム画面に追加可能</p>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h3 style="text-align: center; font-size: 2em; margin-bottom: 30px;">🎮 使用フロー</h3>
+                
+                <div class="workflow">
+                    <div class="workflow-step">
+                        <div class="number">1</div>
+                        <h4>地点選択</h4>
+                        <p>地図をクリックして<br>スタート地点を選択</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="workflow-step">
+                        <div class="number">2</div>
+                        <h4>距離設定</h4>
+                        <p>希望する距離を<br>0.1km単位で入力</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="workflow-step">
+                        <div class="number">3</div>
+                        <h4>コース選択</h4>
+                        <p>周回・往復・片道から<br>コースタイプを選択</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="workflow-step">
+                        <div class="number">4</div>
+                        <h4>自動生成</h4>
+                        <p>AIが最適なルートを<br>自動計算・生成</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="text-align: center; font-size: 2em; margin: 50px 0 30px;">🛠️ 技術スタック</h3>
+            <div class="tech-stack">
+                <span class="tech-badge">JavaScript ES6+</span>
+                <span class="tech-badge">Google Maps API</span>
+                <span class="tech-badge">Directions API</span>
+                <span class="tech-badge">Service Worker</span>
+                <span class="tech-badge">PWA</span>
+                <span class="tech-badge">HTML5</span>
+                <span class="tech-badge">CSS3</span>
+                <span class="tech-badge">Responsive Design</span>
+            </div>
+            
+            <div style="background: #f0f7ff; padding: 30px; border-radius: 15px; margin: 40px 0;">
+                <h3 style="color: #1976D2; text-align: center;">🧠 アルゴリズムの特徴</h3>
+                <ul style="max-width: 600px; margin: 0 auto;">
+                    <li><strong>戦略的アプローチ:</strong> 円形・多角形・往復パターンを順次試行</li>
+                    <li><strong>距離最適化:</strong> 目標距離に対する誤差を最小化</li>
+                    <li><strong>道路適応:</strong> 実際の道路網に基づくルート調整</li>
+                    <li><strong>フォールバック機能:</strong> 複数の戦略で確実な生成を保証</li>
+                </ul>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/" class="btn">🎭 インタラクティブデモを試す</a>
+                <a href="https://github.com/tamaden55/jogging-planner" class="btn secondary">📝 ソースコードを見る</a>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 30px; border-radius: 15px; margin: 40px 0; text-align: center;">
+                <h3 style="color: #F57C00;">💡 ポートフォリオについて</h3>
+                <p>このアプリはデモモードで動作しています。実際の本番環境では、Google Maps APIを使用してリアルタイムで地図データを取得し、精密なルート計算を行います。</p>
+                <p><strong>技術的実装:</strong> 環境に応じて自動的にデモモードと本番モードを切り替える設計により、セキュリティを保ちながらポートフォリオとして機能を展示しています。</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
